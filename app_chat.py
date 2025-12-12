@@ -119,7 +119,9 @@ with st.sidebar:
             
             # Necessary to immediately update the selectbox and title
             st.toast(f"Chat renamed to '{new_title}'", icon='✅')
-            st.experimental_rerun() # Reruns the script to show the new name
+            
+            # 🟢 CORREZIONE APPLICATA: st.rerun() è la funzione corretta
+            st.rerun() # Reruns the script to show the new name
 
     st.markdown("---")
     st.markdown(f"**Model:** `{MODEL_NAME}`")
@@ -225,6 +227,7 @@ if prompt := st.chat_input("Write your message here..."):
                 time.sleep(0.01)
 
         container.write(full_text)
+        
 
     # 4. Save the assistant's message
     st.session_state.messages.append(
