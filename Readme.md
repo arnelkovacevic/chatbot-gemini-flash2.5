@@ -95,7 +95,7 @@ The data/ directory will be created automatically to save the chat history.
 Execute the Streamlit application from your terminal:
 ```bash
 streamlit run app_chat.py
-```
+
 
 ## 5. Chat Management
 

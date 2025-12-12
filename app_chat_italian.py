@@ -5,18 +5,18 @@ import streamlit as st
 from google import genai
 from dotenv import load_dotenv
 
-# --- LOGO PATH ---
-# Ensure this path is correct relative to your main script
+# --- PERCORSO LOGO ---
+# Assicurati che questo percorso sia corretto rispetto al tuo script principale
 LOGO_PATH = "docs/Orizon-com.jpg" 
 # ---------------------
 
-# --- NEW LOGO SETTINGS ---
-LOGO_URL = "https://orizon-aix.com" # The destination URL
-LOGO_WIDTH = 140 # Set the logo width in pixels (e.g., 100px)
+# --- NUOVE IMPOSTAZIONI LOGO ---
+LOGO_URL = "https://orizon-aix.com" # L'URL di destinazione
+LOGO_WIDTH =140 # Imposta la larghezza del logo in pixel (es. 100px)
 # -----------------------------
 
 # ------------------------------
-# Streamlit Initial Configuration
+# Configurazione iniziale di Streamlit
 # ------------------------------
 st.set_page_config(
     page_title="🤖 Gemini Chatbot",
@@ -25,54 +25,54 @@ st.set_page_config(
 )
 
 # ------------------------------
-# Load API Key
+# Carica Chiave API
 # ------------------------------
 load_dotenv()
 GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 
 if not GOOGLE_API_KEY:
-    st.error("❌ Error: GOOGLE_API_KEY environment variable not found. Check your .env file.")
+    st.error("❌ Errore: Variabile d'ambiente GOOGLE_API_KEY non trovata. Controlla il tuo file .env.")
     st.stop()
 
 # ------------------------------
-# Initialize Gemini client (New SDK) in session state
+# Inizializza client Gemini (Nuovo SDK) nello stato di sessione
 # ------------------------------
 if "gemini_client" not in st.session_state:
     try:
         st.session_state.gemini_client = genai.Client(api_key=GOOGLE_API_KEY)
     except Exception as e:
-        st.error(f"Client initialization error: {e}")
+        st.error(f"Errore di inizializzazione del client: {e}")
         st.stop()
 
 client = st.session_state.gemini_client
 
 # ------------------------------
-# Chat Settings
+# Impostazioni Chat
 # ------------------------------
 MODEL_NAME = "gemini-2.5-flash" 
 AI_AVATAR_ICON = "✨"
 MODEL_ROLE = "ai"
 
 # ------------------------------
-# Data Preparation
+# Preparazione Dati
 # ------------------------------
 os.makedirs("data", exist_ok=True)
 
-# Load past chats
+# Carica chat precedenti
 try:
     past_chats: dict = joblib.load("data/past_chats_list")
 except:
     past_chats = {}
 
-# Unique chat ID for new session
+# ID chat univoco per nuova sessione
 new_chat_id = str(time.time())
 
 # ------------------------------
-# Sidebar Chat List + Rename Functionality
+# Sidebar Elenco Chat + Funzione Rinomina
 # ------------------------------
 with st.sidebar:
     
-    st.write("## 📜 Chat History") # The header is here
+    st.write("## 📜 Storico Chat") # L'intestazione è qui
 
     options = [new_chat_id] + list(past_chats.keys())
     
@@ -85,78 +85,83 @@ with st.sidebar:
         current_index = 0
     
     selected_chat_id = st.selectbox(
-        "Select or create a chat",
+        "Seleziona o crea una chat",
         options=options,
         index=current_index,
-        format_func=lambda x: past_chats.get(x, "➕ New Chat"),
-        key="selectbox_chat" # Adding a key
+        format_func=lambda x: past_chats.get(x, "➕ Nuova Chat"),
+        key="selectbox_chat" # Aggiungiamo una chiave
     )
     
     st.session_state.chat_id = selected_chat_id
 
-    # Update the title of the selected chat
+    # Aggiorna il titolo della chat selezionata
     if st.session_state.chat_id == new_chat_id:
-         st.session_state.chat_title = "New Chat"
+         st.session_state.chat_title = "Nuova Chat"
     elif st.session_state.chat_id in past_chats:
          st.session_state.chat_title = past_chats[st.session_state.chat_id]
 
-    # --- Rename Chat Functionality ---
+    # --- Funzionalità Rinomina Chat ---
     if st.session_state.chat_id != new_chat_id:
         st.markdown("---")
         
         new_title = st.text_input(
-            "✏️ Rename Chat",
+            "✏️ Rinomina Chat",
             value=st.session_state.chat_title,
             max_chars=50,
             key="rename_input"
         )
         
-        # Logic to save the new name
+        # Logica per salvare il nuovo nome
         if new_title and new_title != st.session_state.chat_title:
             past_chats[st.session_state.chat_id] = new_title
             st.session_state.chat_title = new_title
             joblib.dump(past_chats, "data/past_chats_list")
             
-            # Necessary to immediately update the selectbox and title
-            st.toast(f"Chat renamed to '{new_title}'", icon='✅')
-            st.experimental_rerun() # Reruns the script to show the new name
+            # Necessario per aggiornare immediatamente la selectbox e il titolo
+            st.toast(f"Chat rinominata in '{new_title}'", icon='✅')
+            st.experimental_rerun() # Ricarica lo script per mostrare il nuovo nome
 
     st.markdown("---")
-    st.markdown(f"**Model:** `{MODEL_NAME}`")
+    st.markdown(f"**Modello:** `{MODEL_NAME}`")
     
-    # --- LOGO PLACEMENT AT THE BOTTOM LEFT (LAST ELEMENT) ---
-    st.markdown("---") # Visual separator
+    # --- INSERIMENTO LOGO IN BASSO A SINISTRA (ULTIMO ELEMENTO) ---
+    st.markdown("---") # Separatore visivo
     
     if os.path.exists(LOGO_PATH):
         
-        # 1. Use st.image to load the image locally (Streamlit displays it)
-        # st.image is not clickable, so we just display it:
+        # 1. Usa st.image per caricare l'immagine localmente (Streamlit la visualizza)
+        # St.image non è cliccabile, quindi la mostriamo solo:
         st.image(LOGO_PATH, width=LOGO_WIDTH)
         
-        # 2. Use st.markdown to create a clickable link RIGHT AFTER
-        # (Ideally we want the image to be clickable, but this is a good compromise)
+        # 2. Usa st.markdown per creare un link cliccabile SUBITO DOPO
+        # (Idealmente vorremmo che l'immagine fosse cliccabile, ma questo è un buon compromesso)
         st.markdown(
             f'<div style="text-align: center; margin-top: -10px; margin-bottom: 5px;">'
-            f'<a href="{LOGO_URL}" target="_blank" style="font-size:16px; color: grey; text-decoration: none;">Go to Orizon AI</a>'
+            f'<a href="{LOGO_URL}" target="_blank" style="font-size:16px; color: grey; text-decoration: none;">Vai a Orizon AI</a>'
             f'</div>',
             unsafe_allow_html=True
         )
         
-        # If you want the image *and* the "Powered by Gemini" text:
+        # ALTERNATIVA MIGLIORE: Usare il Markdown standard per l'immagine-link (funziona solo se l'immagine è accessibile via URL, ma a volte funziona anche con immagini locali se Streamlit le espone)
+        # st.markdown(f'[![Orizon AI]({LOGO_PATH})]({LOGO_URL})')
+
+        # Se vuoi l'immagine *e* il testo "Powered by Gemini" (come nel codice precedente, ma con la correzione del path):
+        # NOTA: Per le immagini locali, l'unica soluzione completamente affidabile per renderle cliccabili è *hostarle online* e usare il loro URL nel tag <img> HTML.
+        # Poiché l'immagine è locale, torniamo all'uso di st.image che funziona, e un link subito sotto.
         st.markdown(f'<p style="font-size: 10px; color: grey; text-align: center;">Powered by Gemini</p>', unsafe_allow_html=True)
     else:
-        st.warning(f"⚠️ Logo not found. Ensure the file exists at path: `{LOGO_PATH}`")
+        st.warning(f"⚠️ Logo non trovato. Assicurati che il file esista al percorso: `{LOGO_PATH}`")
     # -----------------------------------------------------------------
 
 
 # ------------------------------
-# Main Area
+# Area Principale
 # ------------------------------
-st.title("🤖 Chat with Gemini")
-st.caption(f"You are using the **{MODEL_NAME}** model.")
+st.title("🤖 Chat con Gemini")
+st.caption(f"Stai usando il modello **{MODEL_NAME}**.")
 
 # ------------------------------
-# Load chat history for the selected ID
+# Carica cronologia chat per l'ID selezionato
 # ------------------------------
 try:
     st.session_state.messages = joblib.load(
@@ -172,7 +177,7 @@ except:
          del st.session_state.chat
 
 # ------------------------------
-# Initialize chat session (Client)
+# Inizializza sessione chat (Client)
 # ------------------------------
 if "chat" not in st.session_state:
     st.session_state.chat = client.chats.create(
@@ -181,7 +186,7 @@ if "chat" not in st.session_state:
     )
 
 # ------------------------------
-# Display past messages
+# Visualizza messaggi passati
 # ------------------------------
 for message in st.session_state.messages:
     avatar = message.get("avatar", "👤" if message["role"] == "user" else AI_AVATAR_ICON)
@@ -189,11 +194,11 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # ------------------------------
-# User Input and Response Generation
+# Input Utente e Generazione Risposta
 # ------------------------------
-if prompt := st.chat_input("Write your message here..."):
+if prompt := st.chat_input("Scrivi qui il tuo messaggio..."):
 
-    # 1. Display and save the user's message
+    # 1. Visualizza e salva il messaggio dell'utente
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
@@ -201,7 +206,7 @@ if prompt := st.chat_input("Write your message here..."):
         dict(role="user", content=prompt)
     )
 
-    # 2. Send the message in streaming
+    # 2. Invia il messaggio in streaming
     with st.chat_message(name=MODEL_ROLE, avatar=AI_AVATAR_ICON):
         
         try:
@@ -209,13 +214,13 @@ if prompt := st.chat_input("Write your message here..."):
                 prompt
             )
         except Exception as e:
-            st.error(f"API Error while sending message: {e}")
+            st.error(f"Errore API durante l'invio del messaggio: {e}")
             st.stop() 
             
         container = st.empty()
         full_text = ""
         
-        # 3. Process the streaming chunks (typing effect)
+        # 3. Processa i chunk in streaming (effetto digitazione)
         for chunk in response:
             if not chunk.text:
                 continue
@@ -226,7 +231,7 @@ if prompt := st.chat_input("Write your message here..."):
 
         container.write(full_text)
 
-    # 4. Save the assistant's message
+    # 4. Salva il messaggio dell'assistente
     st.session_state.messages.append(
         dict(
             role=MODEL_ROLE,
@@ -235,18 +240,18 @@ if prompt := st.chat_input("Write your message here..."):
         )
     )
 
-    # 5. Update and save Gemini history
+    # 5. Aggiorna e salva la cronologia di Gemini
     st.session_state.gemini_history = st.session_state.chat.get_history()
     
-    # 6. Save the session (Storage)
+    # 6. Salvataggio della sessione (Storage)
     if st.session_state.chat_id not in past_chats:
-        # When a New Chat receives the first message, it is given an automatic title
+        # Quando una Nuova Chat riceve il primo messaggio, le viene dato un titolo automatico
         new_title = " ".join(prompt.split()[:5]) + "..."
         past_chats[st.session_state.chat_id] = new_title
         st.session_state.chat_title = new_title
         joblib.dump(past_chats, "data/past_chats_list")
 
-    # Save messages and history
+    # Salva messaggi e cronologia
     joblib.dump(
         st.session_state.messages,
         f"data/{st.session_state.chat_id}-st_messages",
@@ -256,5 +261,5 @@ if prompt := st.chat_input("Write your message here..."):
         f"data/{st.session_state.chat_id}-gemini_messages",
     )
     
-    # Rerunning is not necessary here if the chat has been renamed
+    # Rerunning non è necessario qui se la chat è stata rinominata
     st.rerun()
