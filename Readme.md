@@ -56,9 +56,11 @@ cd [PROJECT FOLDER NAME]
 ## 3.2. Create a Virtual Environment and Install Dependencies
 
 # Create and activate the virtual environment
+```bash
 python3 -m venv venv
 source venv/bin/activate
 # Windows: .\venv\Scripts\activate
+```
 
 # Install required packages
 pip install streamlit google-generativeai python-dotenv joblib
