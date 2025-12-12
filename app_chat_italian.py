@@ -12,14 +12,14 @@ LOGO_PATH = "docs/Orizon-com.jpg"
 
 # --- NUOVE IMPOSTAZIONI LOGO ---
 LOGO_URL = "https://orizon-aix.com" # L'URL di destinazione
-LOGO_WIDTH =140 # Imposta la larghezza del logo in pixel (es. 100px)
+LOGO_WIDTH = 140 # Imposta la larghezza del logo in pixel (es. 140px)
 # -----------------------------
 
 # ------------------------------
-# Configurazione iniziale di Streamlit
+# Configurazione Iniziale di Streamlit
 # ------------------------------
 st.set_page_config(
-    page_title="🤖 Gemini Chatbot",
+    page_title="🤖 Chatbot Gemini",
     page_icon="✨",
     layout="wide"
 )
@@ -72,7 +72,7 @@ new_chat_id = str(time.time())
 # ------------------------------
 with st.sidebar:
     
-    st.write("## 📜 Storico Chat") # L'intestazione è qui
+    st.write("## 📜 Storico Chat") # Intestazione
 
     options = [new_chat_id] + list(past_chats.keys())
     
@@ -119,7 +119,9 @@ with st.sidebar:
             
             # Necessario per aggiornare immediatamente la selectbox e il titolo
             st.toast(f"Chat rinominata in '{new_title}'", icon='✅')
-            st.experimental_rerun() # Ricarica lo script per mostrare il nuovo nome
+            
+            # Ricarica lo script per mostrare il nuovo nome
+            st.rerun() 
 
     st.markdown("---")
     st.markdown(f"**Modello:** `{MODEL_NAME}`")
@@ -130,11 +132,9 @@ with st.sidebar:
     if os.path.exists(LOGO_PATH):
         
         # 1. Usa st.image per caricare l'immagine localmente (Streamlit la visualizza)
-        # St.image non è cliccabile, quindi la mostriamo solo:
         st.image(LOGO_PATH, width=LOGO_WIDTH)
         
         # 2. Usa st.markdown per creare un link cliccabile SUBITO DOPO
-        # (Idealmente vorremmo che l'immagine fosse cliccabile, ma questo è un buon compromesso)
         st.markdown(
             f'<div style="text-align: center; margin-top: -10px; margin-bottom: 5px;">'
             f'<a href="{LOGO_URL}" target="_blank" style="font-size:16px; color: grey; text-decoration: none;">Vai a Orizon AI</a>'
@@ -142,12 +142,7 @@ with st.sidebar:
             unsafe_allow_html=True
         )
         
-        # ALTERNATIVA MIGLIORE: Usare il Markdown standard per l'immagine-link (funziona solo se l'immagine è accessibile via URL, ma a volte funziona anche con immagini locali se Streamlit le espone)
-        # st.markdown(f'[![Orizon AI]({LOGO_PATH})]({LOGO_URL})')
-
-        # Se vuoi l'immagine *e* il testo "Powered by Gemini" (come nel codice precedente, ma con la correzione del path):
-        # NOTA: Per le immagini locali, l'unica soluzione completamente affidabile per renderle cliccabili è *hostarle online* e usare il loro URL nel tag <img> HTML.
-        # Poiché l'immagine è locale, torniamo all'uso di st.image che funziona, e un link subito sotto.
+        # Testo "Powered by Gemini"
         st.markdown(f'<p style="font-size: 10px; color: grey; text-align: center;">Powered by Gemini</p>', unsafe_allow_html=True)
     else:
         st.warning(f"⚠️ Logo non trovato. Assicurati che il file esista al percorso: `{LOGO_PATH}`")
@@ -261,5 +256,5 @@ if prompt := st.chat_input("Scrivi qui il tuo messaggio..."):
         f"data/{st.session_state.chat_id}-gemini_messages",
     )
     
-    # Rerunning non è necessario qui se la chat è stata rinominata
+    # Ricarica lo script se necessario (già corretto)
     st.rerun()
