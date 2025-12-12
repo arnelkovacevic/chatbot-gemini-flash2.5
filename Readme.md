@@ -1,71 +1,102 @@
-# Gemini Chatbot Interface with Streamlit
+# ⭐ Gemini Chatbot - Orizon AIX User Interface
 
-## Overview
+## 👨‍💻 Project Lead
+**Arnel Kovacevic**
 
-This project is a Streamlit-based chat application that interacts with the Gemini AI model, allowing users to engage in conversations with an artificial intelligence assistant. The application stores chat history, allowing users to revisit and continue previous conversations.
+## 🗓️ Project Year
+2025 December
 
-<div align="center"><img src="docs/gemini-chatbot.gif" width="800"></div>
+---
 
-## Getting Started
+## 📘 1. Project Overview
 
-### Dependencies
+This project implements a **Streamlit-based conversational chat interface** that leverages the **Gemini 2.5 Flash** model by Google.
 
-This code uses the following libraries:
+The application is designed to offer a fluid user experience with essential features for professional use:
+* **Chat History Management:** Every chat session is saved locally, allowing users to revisit or continue past conversations.
+* **Streaming Response:** Model responses are displayed in real-time for dynamic interaction.
+* **Custom UI:** Includes specific branding and links for **orizon-aix.com**.
 
-- `streamlit`: for building the user interface. 
-- `gemini`: for chat  
-- Gemini API key: Get it from [Google AI Studio](https://ai.google.dev/tutorials/setup?hl=tr)
+### Key Features
+* **AI Model:** `gemini-2.5-flash`
+* **UI Framework:** Streamlit
+* **Persistence:** History saving using `joblib`
+* **Company Link:** [Visit Orizon AIX](https://orizon-aix.com)
 
+---
 
-### Usage
+## 🚀 2. Prerequisites
 
-Follow these steps to set up and run the project:
+### 🔧 2.1. Python Dependencies
+Ensure you have Python 3.8+ installed. The necessary libraries are:
+* `streamlit`
+* `google-generativeai` (for the Gemini API)
+* `python-dotenv`
+* `joblib`
 
-1. Create a virtual environment:
+### 🔑 2.2. API Key
+A Google Gemini API key is required.
+👉 Get it here: https://ai.google.dev/tutorials/setup
+
+---
+
+## ⚙️ 3. Setup and Installation
+
+Follow these steps to set up and run the project locally.
+
+### **3.1. Clone the Repository (or create the folder)**
+
+If you haven't already:
+```bash
+git clone [INSERT YOUR REPO URL]
+cd [PROJECT FOLDER NAME]
 ```
-python3 -m venv my_env
-source my_env/bin/activate 
-.\my_env\Scripts\activate 
-```
 
-2. Install dependencies:
-```
-pip install -r requirements.txt
-```
 
-3. Run the Streamlit server:
-```
+## 3.2. Create a Virtual Environment and Install Dependencies
+
+# Create and activate the virtual environment
+python3 -m venv venv
+source venv/bin/activate
+# Windows: .\venv\Scripts\activate
+
+# Install required packages
+pip install streamlit google-generativeai python-dotenv joblib
+
+## 3.3. Configure the API Key
+
+Create a file named .env in the project's root directory and insert your API key:
+
+.env
+
+# Replace [YOUR API KEY] with your Gemini key
+GOOGLE_API_KEY="[YOUR API KEY]"
+
+
+##  3.4. Prepare File Structure
+
+Ensure the application has the necessary folders:
+
+Create the docs/ directory for the logo:
+
+mkdir docs
+
+Place the logo file (Orizon-com.jpg) inside docs/.
+
+The data/ directory will be created automatically to save the chat history.
+
+## ▶️ 4. Running the Application
+Execute the Streamlit application from your terminal:
+
 streamlit run app_chat.py
-```
 
-4. Access the application in your browser at http://localhost:8501.
 
-5. Start chatting with the assistant!
+## 5. Chat Management
 
-## Repository Structure
-```
-repository/
-├── app_chat.py               # the code and UI integrated together live here
-├── requirements.txt     # the python packages needed to run locally
-├── .streamlit/
-│   └── config.toml      # theme info for the UI
-├── data/                # folder for saved chat messages 
-├── docs/                # preview for github
+The chat history (st.session_state.messages and st.session_state.gemini_history) is managed using joblib to save state files in the data/ folder. Each new chat gets a unique ID based on the timestamp.
 
-```
+# Example state files:
+data/[chat_id]-st_messages
+data/[chat_id]-gemini_messages
+data/past_chats_list (Dictionary of titles)
 
-## How it Works
-
-The app as follows:
-
-1. The user enters a question in the input field.
-
-2. User messages are sent to the Gemini model for processing.
-
-3. The user's input, along with the chat history, is used to generate a response.
-
-4. The Gemini model generates a response based on the patterns it learned during training.
-
-5. The application saves chat messages and Gemini AI chat history to files for later retrieval.
-
-6. A new chat is created if the user initiates a conversation that hasn't been stored before, or user can go back to past chats.
