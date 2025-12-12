@@ -68,30 +68,34 @@ pip install streamlit google-generativeai python-dotenv joblib
 ## 3.3. Configure the API Key
 
 Create a file named .env in the project's root directory and insert your API key:
-
+```bash
 .env
+```
 
 # Replace [YOUR API KEY] with your Gemini key
-GOOGLE_API_KEY="[YOUR API KEY]"
+```bash
 
+GOOGLE_API_KEY="[YOUR API KEY]"
+```
 
 ##  3.4. Prepare File Structure
 
 Ensure the application has the necessary folders:
 
 Create the docs/ directory for the logo:
-
+```bash
 mkdir docs
+```
 
-Place the logo file (Orizon-com.jpg) inside docs/.
+Place the your logo file (Orizon-com.jpg) inside docs/.
 
 The data/ directory will be created automatically to save the chat history.
 
 ## ▶️ 4. Running the Application
 Execute the Streamlit application from your terminal:
-
+```bash
 streamlit run app_chat.py
-
+```
 
 ## 5. Chat Management
 
